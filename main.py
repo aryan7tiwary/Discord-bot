@@ -16,10 +16,23 @@ async def on_ready():
   
 def help_weather():
   help_message = """
-  For command list:    `$helpme`
-  For weather reports: `$weather <city name>`
-  For weather reports: `$weather <city name>,<Country name>
-  For pinging the bot: `$ping`
+  ```
+  \nFor command list -----> $helpme
+
+  \nFor weather reports --> $weather <city name>
+                        $weather <city name/country>
+                        $weather <country>
+
+  \nFor jokes ------------> $joke
+  \nFor number facts -----> $fact <number>
+
+  \nFor date facts -------> $datefact <month/date>
+                        eg: $datefact 3/11
+
+  \nFor math facts -------> $mathfact <number>
+
+  \nFor pinging the bot --> $ping
+  ```
   """
   return (help_message)
 
@@ -41,8 +54,8 @@ async def weather(ctx, *, city_name):
   weather = json_data
 
   #city name
-  city = city_name
-  city_mod = "City:                {}".format(city)
+  city = weather['name']
+  city_mod = "Place:               {}".format(city)
 
   #country name
   country = weather['sys']['country']
@@ -97,15 +110,40 @@ async def weather(ctx, *, city_name):
   {sunrise_time_mod}
   {sunset_time_mod}
 
-
-
-
-
-  *Add 5:30 for IST
+  *Add 5:30 for IST*
   ```
   ''' 
 
   await ctx.channel.send(main)
+
+
+@client.command()
+async def fact(ctx, *, number):
+  fact_response = requests.get(f"http://numbersapi.com/{number}")
+  fact_data = fact_response.text
+  fact_mod = (f"```{fact_data}```")
+  await ctx.channel.send(fact_mod)
+
+@client.command()
+async def datefact(ctx, *, input_date):
+  date_response = requests.get(f"http://numbersapi.com/{input_date}/date")
+  date_fact = date_response.text
+  date_mod = (f"```{date_fact}```")
+  await ctx.channel.send(date_mod)
+
+@client.command()
+async def mathfact(ctx, *, input_math):
+  math_response = requests.get(f"http://numbersapi.com/{input_math}/math")
+  math_fact = math_response.text
+  math_mod = (f"```{math_fact}```")
+  await ctx.channel.send(math_mod)
+
+@client.command()
+async def joke(ctx):
+  joke_response = requests.get(f"https://v2.jokeapi.dev/joke/Any?format=txt")
+  joke = joke_response.text
+  joke_mod = (f"```{joke}```")
+  await ctx.channel.send(joke_mod)
 
 keep_alive()  
 client.run(os.environ['TOKEN'])
