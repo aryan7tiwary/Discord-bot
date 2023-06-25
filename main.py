@@ -6,10 +6,9 @@ import json
 from discord.ext import commands
 from datetime import datetime
 
-intents = discord.Intents.default()
-intents.members = True
-
-client = commands.Bot(command_prefix = '$', intents=intents)
+# If intents related error:  pip3 install -U discord==1.7.3 && pip3 install -U discord.py==1.7.3
+client = discord.Client()
+client = commands.Bot(command_prefix = '$')
 
 @client.event
 async def on_ready():
@@ -19,27 +18,8 @@ async def on_ready():
 
 
 def help_weather():
-    help_message = """
-  ```
-  \nFor command list -----> $helpme
-
-  \nFor weather reports --> $weather <city name>
-                        $weather <city name/country>
-                        $weather <country>
-
-  \nFor jokes ------------> $joke
-  \nFor number facts -----> $fact <number>
-
-  \nFor date facts -------> $datefact <month/date>
-                        eg: $datefact 3/11
-
-  \nFor math facts -------> $mathfact <number>
-
-  \nFor pinging the bot --> $ping
-  ```
-  """
+    help_message = "https://i.imgur.com/aSqBAUU.png"
     return (help_message)
-
 
 @client.command()
 async def ping(ctx):
@@ -59,6 +39,10 @@ async def weather(ctx, *, city_name):
         + os.environ['API'] + '&units=metric')
     json_data = json.loads(response.text)
     weather = json_data
+
+    icon = weather['weather'][0]['icon']
+    iconurl = "http://openweathermap.org/img/w/" + icon + ".png"
+    await ctx.channel.send(iconurl)
 
     #city name
     city = weather['name']
@@ -84,6 +68,9 @@ async def weather(ctx, *, city_name):
     temp_feels = weather['main']['feels_like']
     temp_feels_mod = f"Feels like:          {temp_feels} °C"
 
+    #icon
+    icon = weather['weather'][0]['icon']
+
     #description
     description = weather['weather'][0]['description']
     description_mod = "Description:         {}".format(description)
@@ -103,6 +90,10 @@ async def weather(ctx, *, city_name):
     ts = sunset_time
     sunset_utc = datetime.utcfromtimestamp(ts).strftime('%H:%M:%S')[:-3]
     sunset_time_mod = "Sunset time:         {} UTC*".format(sunset_utc)
+
+    # lengthy description
+    # len_description = weather['alerts'][0]['description']
+    # len_description_mod = "Description:         {}".format(description)
 
     main = f'''
   ```
@@ -125,7 +116,7 @@ async def weather(ctx, *, city_name):
 
 
 @client.command()
-async def fact(ctx, *, number):
+async def numfact(ctx, *, number):
     fact_response = requests.get(f"http://numbersapi.com/{number}")
     fact_data = fact_response.text
     fact_mod = (f"```{fact_data}```")
@@ -169,8 +160,33 @@ async def imdb(ctx, *, input_movie):
                                 url,
                                 headers=headers,
                                 params=querystring)
-    response2 = response.text
-    await ctx.channel.send(response2)
+    json_data = json.loads(response.text)
+    response2 = json_data
+
+    image = response2['d'][0]['i']['imageUrl']
+    await ctx.channel.send(image)
+
+    rank = response2['d'][0]['rank']
+    rank_mod = f"{rank}"
+
+    year = response2['d'][0]['y']
+    year_mod = f"{year}"
+
+    type = response2['d'][0]['qid']
+    type_mode = f"{type}"
+
+    main_cast = response2['d'][0]['s']
+    main_case_mod = f"{main_cast}"
+    
+    main = f'''
+    ```
+    Type: {type_mode}
+    Rank: {rank_mod}
+    Year: {year_mod}
+    Cast: {main_case_mod}
+    ```
+    '''
+    await ctx.channel.send(main)
 
 load_dotenv()
 client.run(os.getenv("TOKEN"))
