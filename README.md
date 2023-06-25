@@ -8,7 +8,7 @@ The bot can:
 4. Provide IMDb information for different films and TV shows.
 5. Tell you about the world's superheroes (fictional).
 
-![image](https://user-images.githubusercontent.com/69082867/129700022-6ad66e57-0930-455e-807d-291336a7ca4c.png)
+![image](https://i.imgur.com/aSqBAUU.png)
 
 #### Invite Doggy to your server!
 https://top.gg/bot/863310966928965632
