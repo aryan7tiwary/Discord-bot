@@ -5,6 +5,7 @@ import requests
 import json
 from discord.ext import commands
 from datetime import datetime
+from dateutil import tz
 
 # If intents related error:  pip3 install -U discord==1.7.3 && pip3 install -U discord.py==1.7.3
 client = discord.Client()
@@ -46,70 +47,67 @@ async def weather(ctx, *, city_name):
 
     #city name
     city = weather['name']
-    city_mod = "Place:               {}".format(city)
+    city_mod = f"{city}"
 
     #country name
     country = weather['sys']['country']
-    country_mod = "Country:             {}".format(country)
+    country_mod = f"{country}"
 
     #temperature
     temp = weather['main']['temp']
-    temp_mod = f"Current temperature: {temp} °C"
+    temp_mod = f"{temp}"
 
     #min temperature
     temp_min = weather['main']['temp_min']
-    temp_min_mod = f"Minimum temperature: {temp_min} °C"
+    temp_min_mod = f"{temp_min}"
 
     #max temperature
     temp_max = weather['main']['temp_max']
-    temp_max_mod = f"Maximum temperature: {temp_max} °C"
+    temp_max_mod = f"{temp_max}"
 
     #feels like temperature
     temp_feels = weather['main']['feels_like']
-    temp_feels_mod = f"Feels like:          {temp_feels} °C"
+    temp_feels_mod = f"{temp_feels}"
 
     #icon
     icon = weather['weather'][0]['icon']
 
     #description
     description = weather['weather'][0]['description']
-    description_mod = "Description:         {}".format(description)
+    description_mod = f"{description}"
 
     #wind speed
     wind_speed = weather['wind']['speed']
-    wind_speed_mod = "Wind speed:          {} m/s".format(wind_speed)
+    wind_speed_mod = F"{wind_speed}"
 
     #sunrise time
     sunrise_time = int(weather['sys']['sunrise'])
     ts = sunrise_time
     sunrise_utc = datetime.utcfromtimestamp(ts).strftime('%H:%M:%S')[:-3]
-    sunrise_time_mod = "Sunrise time:        {} UTC*".format(sunrise_utc)
+    sunrise_time_mod = f"{sunrise_utc}"
 
     #sunset time
     sunset_time = int(weather['sys']['sunset'])
     ts = sunset_time
     sunset_utc = datetime.utcfromtimestamp(ts).strftime('%H:%M:%S')[:-3]
-    sunset_time_mod = "Sunset time:         {} UTC*".format(sunset_utc)
+    sunset_time_mod = f"{sunset_utc}"
 
     # lengthy description
     # len_description = weather['alerts'][0]['description']
     # len_description_mod = "Description:         {}".format(description)
 
     main = f'''
-  ```
-  {city_mod}
-  {country_mod}
-  {temp_mod}
-  {temp_min_mod}
-  {temp_max_mod}
-  {temp_feels_mod}
-  {description_mod}
-  {wind_speed_mod}
-  {sunrise_time_mod}
-  {sunset_time_mod}
-
-  *Add 5:30 for IST*
-  ```
+  >>> 
+  **City:**\t{city_mod}
+  **Country:**\t{country_mod}\n
+  **Temperature:**\t{temp_mod} °C
+  **Min Temperature:**\t{temp_min_mod} °C
+  **Max Temperature:**\t{temp_max_mod} °C
+  **Feels Like:**\t{temp_feels_mod} °C\n
+  **Description:**\t{description_mod}
+  **Wind Speed:**\t{wind_speed_mod} m/s\n
+  **Sunrise Time:**\t{sunrise_time_mod}+5:30 IST
+  **Sunset Time:**\t{sunset_time_mod}+5:30 IST
   '''
 
     await ctx.channel.send(main)
@@ -179,14 +177,119 @@ async def imdb(ctx, *, input_movie):
     main_case_mod = f"{main_cast}"
     
     main = f'''
-    ```
-    Type: {type_mode}
-    Rank: {rank_mod}
-    Year: {year_mod}
-    Cast: {main_case_mod}
-    ```
+    >>> 
+    **Type:** {type_mode}
+    **Rank:** {rank_mod}
+    **Year:** {year_mod}
+    **Cast:** {main_case_mod}
     '''
     await ctx.channel.send(main)
+
+@client.command()
+async def metahuman(ctx, *, input_name):
+    load_dotenv()
+    url = "https://superhero-search.p.rapidapi.com/api/"
+    querystring = {"hero":{input_name}}
+    headers = {
+	    "X-RapidAPI-Key": os.environ['superhero_API'],
+	    "X-RapidAPI-Host": "superhero-search.p.rapidapi.com"
+    }
+    response = requests.get(url, headers=headers, params=querystring)
+    json_data = json.loads(response.text)
+    response2 = json_data
+    image = response2['images']['lg']
+    await ctx.channel.send(image)
+    
+    name = response2['name']
+    name_mod = f"{name}"
+
+    intelligence = response2['powerstats']['intelligence']
+    intelligence_mod = f"{intelligence}"
+
+    strength = response2['powerstats']['strength']
+    strength_mod = f"{strength}"
+
+    speed = response2['powerstats']['speed']
+    speed_mod = f"{speed}"
+
+    durability = response2['powerstats']['durability']
+    durability_mod = f"{durability}"
+
+    power = response2['powerstats']['power']
+    power_mod = f"{power}"
+
+    combat = response2['powerstats']['combat']
+    combat_mod = f"{combat}"
+
+    gender = response2['appearance']['gender']
+    gender_mod = f"{gender}"
+
+    race = response2['appearance']['race']
+    race_mod = f"{race}"
+
+    height = response2['appearance']['height'][0]
+    height_mod = f"{height}"
+
+    weight = response2['appearance']['weight'][1]
+    weight_mod = f"{weight}"
+
+    fullname = response2['biography']['fullName']
+    fullname_mod = f"{fullname}"
+
+    alias1 = response2['biography']['aliases'][0]
+    alias1_mod = f"{alias1}"
+    alias2 = response2['biography']['aliases'][1]
+    alias2_mod = f"{alias2}"
+    alias3 = response2['biography']['aliases'][2]
+    alias3_mod = f"{alias3}"
+
+    birthPlace = response2['biography']['placeOfBirth']
+    birthPlace_mod = f"{birthPlace}"
+
+    publisher = response2['biography']['publisher']
+    publisher_mod = f"{publisher}"
+
+    alignment = response2['biography']['alignment']
+    alignment_mod = f"{alignment}"
+
+    occupation = response2['work']['occupation']
+    occupation_mod = f"{occupation}"
+
+    groupAffiliation = response2['connections']['groupAffiliation']
+    groupAffiliation_mod = f"{groupAffiliation}"
+
+    relatives = response2['connections']['relatives']
+    relatives_mod = f"{relatives}"
+
+    main = f'''
+    >>> 
+    **__Name:__**\t{name_mod}\n
+    **__Powerstats:__**
+    \t*Intelligence:*\t{intelligence_mod}
+    \t*Strength:*\t{strength_mod}
+    \t*Speed:*\t{speed_mod}
+    \t*Durability:*\t{durability_mod}
+    \t*Power:*\t{power_mod}
+    \t*Combat:*\t{combat_mod}\n
+    **__Appearance:__**
+    \t*Gender:*\t{gender_mod}
+    \t*Race:*\t{race_mod}
+    \t*Height:*\t{height_mod}
+    \t*Weight:*\t{weight_mod}\n
+    **__Biography:__**
+    \t*Full Name:*\t{fullname_mod}
+    \t*Aliases:*\t{alias1_mod}, {alias2_mod}, {alias3_mod}
+    \t*Place of Birth:*\t{birthPlace_mod}
+    \t*Publisher:*\t{publisher_mod}
+    \t*Alignment:*\t{alignment_mod}\n
+    **__Occupation:__**\t{occupation_mod}\n
+    **__Connections:__**
+    \t*Group Affiliation:*\t{groupAffiliation}\n
+    \t*Relatives:*\t{relatives_mod}
+        
+    '''
+    await ctx.channel.send(main)
+
 
 load_dotenv()
 client.run(os.getenv("TOKEN"))
