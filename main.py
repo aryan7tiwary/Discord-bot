@@ -19,7 +19,7 @@ async def on_ready():
 
 
 def help_weather():
-    help_message = "https://i.imgur.com/aSqBAUU.png"
+    help_message = "https://i.imgur.com/jCbe50i.png"
     return (help_message)
 
 @client.command()
