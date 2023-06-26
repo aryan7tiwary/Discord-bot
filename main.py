@@ -236,12 +236,12 @@ async def metahuman(ctx, *, input_name):
     fullname = response2['biography']['fullName']
     fullname_mod = f"{fullname}"
 
-    alias1 = response2['biography']['aliases'][0]
-    alias1_mod = f"{alias1}"
-    alias2 = response2['biography']['aliases'][1]
-    alias2_mod = f"{alias2}"
-    alias3 = response2['biography']['aliases'][2]
-    alias3_mod = f"{alias3}"
+    # alias1 = response2['biography']['aliases'][0]
+    # alias1_mod = f"{alias1}"
+    # alias2 = response2['biography']['aliases'][1]
+    # alias2_mod = f"{alias2}"
+    # alias3 = response2['biography']['aliases'][2]
+    # alias3_mod = f"{alias3}"
 
     birthPlace = response2['biography']['placeOfBirth']
     birthPlace_mod = f"{birthPlace}"
@@ -278,7 +278,6 @@ async def metahuman(ctx, *, input_name):
     \t*Weight:*\t{weight_mod}\n
     **__Biography:__**
     \t*Full Name:*\t{fullname_mod}
-    \t*Aliases:*\t{alias1_mod}, {alias2_mod}, {alias3_mod}
     \t*Place of Birth:*\t{birthPlace_mod}
     \t*Publisher:*\t{publisher_mod}
     \t*Alignment:*\t{alignment_mod}\n
