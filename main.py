@@ -37,7 +37,7 @@ async def weather(ctx, *, city_name):
     load_dotenv()
     response = requests.get(
         f'https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid='
-        + os.environ['API'] + '&units=metric')
+        + os.environ['weather_API'] + '&units=metric')
     json_data = json.loads(response.text)
     weather = json_data
 
@@ -78,7 +78,7 @@ async def weather(ctx, *, city_name):
 
     #wind speed
     wind_speed = weather['wind']['speed']
-    wind_speed_mod = F"{wind_speed}"
+    wind_speed_mod = f"{wind_speed}"
 
     #sunrise time
     sunrise_time = int(weather['sys']['sunrise'])
@@ -92,6 +92,10 @@ async def weather(ctx, *, city_name):
     sunset_utc = datetime.utcfromtimestamp(ts).strftime('%H:%M:%S')[:-3]
     sunset_time_mod = f"{sunset_utc}"
 
+    #humidity
+    humidity = weather['main']['humidity']
+    humidity_mod = f"{humidity}"
+
     # lengthy description
     # len_description = weather['alerts'][0]['description']
     # len_description_mod = "Description:         {}".format(description)
@@ -103,6 +107,7 @@ async def weather(ctx, *, city_name):
   **Temperature:**\t{temp_mod} °C
   **Min Temperature:**\t{temp_min_mod} °C
   **Max Temperature:**\t{temp_max_mod} °C
+  **Humidity:**\t{humidity_mod}%
   **Feels Like:**\t{temp_feels_mod} °C\n
   **Description:**\t{description_mod}
   **Wind Speed:**\t{wind_speed_mod} m/s\n
